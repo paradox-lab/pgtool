@@ -15,7 +15,7 @@ import sys
 sys.path.insert(0, os.path.abspath('..\\..\\SqlTool'))
 ##sys.path.insert(0, os.path.abspath('..\\..\\src'))
 
-#apidoc_module_dir = '..\\..\\src\\新建文件夹'
+apidoc_module_dir = '..\\..\\SqlTool'
 
 # -- Project information -----------------------------------------------------
 
