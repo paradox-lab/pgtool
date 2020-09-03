@@ -1,0 +1,611 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>console_client &mdash; pgt 1.0 文档</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/translations.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pgt
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pgt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">模块代码</a> &raquo;</li>
+        
+      <li>console_client</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>console_client 源代码</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">BASE_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)))</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Thread</span><span class="p">,</span><span class="n">Lock</span>
+<span class="kn">import</span> <span class="nn">xml.etree.ElementTree</span> <span class="k">as</span> <span class="nn">ET</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span><span class="p">,</span><span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">move</span><span class="p">,</span><span class="n">copy</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+
+<span class="kn">import</span> <span class="nn">openpyxl</span>
+<span class="kn">from</span> <span class="nn">openpyxl.styles</span> <span class="kn">import</span> <span class="n">PatternFill</span><span class="p">,</span> <span class="n">Border</span><span class="p">,</span> <span class="n">Side</span><span class="p">,</span> <span class="n">Alignment</span><span class="p">,</span> <span class="n">Protection</span><span class="p">,</span> <span class="n">Font</span><span class="p">,</span><span class="n">Color</span>
+<span class="kn">from</span> <span class="nn">openpyxl.utils</span> <span class="kn">import</span> <span class="n">get_column_letter</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span><span class="p">,</span> <span class="n">types</span>
+
+<span class="kn">from</span> <span class="nn">pgtool</span> <span class="kn">import</span> <span class="n">SQLClient</span>
+
+<span class="n">year</span><span class="p">,</span><span class="n">month</span><span class="o">=</span><span class="mi">2020</span><span class="p">,</span><span class="mi">7</span>
+
+<div class="viewcode-block" id="ColumnError"><a class="viewcode-back" href="../api/console_client.html#console_client.ColumnError">[文档]</a><span class="k">class</span> <span class="nc">ColumnError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="ExportRules"><a class="viewcode-back" href="../api/console_client.html#console_client.ExportRules">[文档]</a><span class="k">class</span> <span class="nc">ExportRules</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;控制导出文件的配置    </span>
+
+<span class="sd">    &#39;&#39;&#39;</span>    
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Rulefile</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">=</span><span class="n">ET</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">Rulefile</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DateFormat_map</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;yyyyMMddhhmmss&#39;</span><span class="p">:</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">%H%M%S&#39;</span><span class="p">,</span><span class="s1">&#39;yyMMddhhmmss&#39;</span><span class="p">:</span><span class="s1">&#39;%y%m</span><span class="si">%d</span><span class="s1">%H%M%S&#39;</span><span class="p">,</span><span class="s1">&#39;yyyyMM&#39;</span><span class="p">:</span><span class="s1">&#39;%Y%m&#39;</span><span class="p">,</span><span class="s1">&#39;yyyyMMdd&#39;</span><span class="p">:</span><span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OutputFileName</span><span class="o">=</span><span class="p">{</span><span class="mi">1</span><span class="p">:</span><span class="s1">&#39;FileTag&#39;</span><span class="p">,</span><span class="mi">2</span><span class="p">:</span><span class="s1">&#39;DataLocation&#39;</span><span class="p">,</span><span class="mi">3</span><span class="p">:</span><span class="s1">&#39;OutputType&#39;</span><span class="p">,</span><span class="mi">4</span><span class="p">:</span><span class="s1">&#39;OutputDateFormat&#39;</span><span class="p">,</span><span class="mi">5</span><span class="p">:</span><span class="s1">&#39;DataMonth&#39;</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ExportRules.exportRules"><a class="viewcode-back" href="../api/console_client.html#console_client.ExportRules.exportRules">[文档]</a>    <span class="k">def</span> <span class="nf">exportRules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">arg</span> <span class="p">:</span><span class="nb">str</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        返回ExportRules.xml文件的配置值</span>
+<span class="sd">        </span>
+<span class="sd">        出参说明：</span>
+<span class="sd">        param Name:</span>
+<span class="sd">            表、视图或存储过程名称</span>
+<span class="sd">        param Tag：</span>
+<span class="sd">            数据查询时间范围</span>
+<span class="sd">        FileName：</span>
+<span class="sd">            导出文件名称</span>
+<span class="sd">        ExistsHeader：</span>
+<span class="sd">            导出文件是否带表头</span>
+<span class="sd">        IsZip：</span>
+<span class="sd">            是否压缩导出文件</span>
+<span class="sd">        MapptingName：</span>
+<span class="sd">            匹配名称，同时也是入参值的键值</span>
+<span class="sd">        Sqlstament:</span>
+<span class="sd">            可直接运行的SQL语句</span>
+<span class="sd">        Parameters:</span>
+<span class="sd">            存储过程参数列表</span>
+<span class="sd">        &#39;&#39;&#39;</span>        
+        <span class="n">parameters_list</span><span class="o">=</span><span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">MappingName</span> <span class="ow">in</span> <span class="n">arg</span><span class="p">:</span>
+            <span class="n">Procs</span><span class="o">=</span><span class="p">[]</span>
+            
+            <span class="n">parameters</span><span class="o">=</span><span class="p">{}</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">Mapping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;.//Tables//Table[@MappingName=&#39;</span><span class="si">{</span><span class="n">MappingName</span><span class="si">}</span><span class="s2">&#39;]&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">FileFormat</span> <span class="o">=</span> <span class="n">Mapping</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;Config//FileFormat&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+                <span class="n">parameters</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">FileFormat</span><span class="o">=</span><span class="n">FileFormat</span><span class="p">,</span><span class="n">execType</span><span class="o">=</span><span class="s1">&#39;Tables&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">Mapping</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;.//ExecuteMany//Workbook[@MappingName=&#39;</span><span class="si">{</span><span class="n">MappingName</span><span class="si">}</span><span class="s2">&#39;]&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+                    <span class="k">for</span> <span class="n">childs</span> <span class="ow">in</span> <span class="n">Mapping</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;Procs&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s1">&#39;Proc&#39;</span><span class="p">):</span>
+                        <span class="n">ProcName</span><span class="o">=</span><span class="n">childs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Name&#39;</span><span class="p">)</span>
+
+                        <span class="n">procs</span><span class="o">=</span><span class="p">{}</span>
+                        <span class="n">temp</span><span class="o">=</span><span class="p">[]</span>
+                        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">childs</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;Parameters&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s1">&#39;Parameter&#39;</span><span class="p">):</span>
+                            <span class="n">Name</span><span class="o">=</span><span class="n">child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Name&#39;</span><span class="p">)</span>
+                            <span class="n">Mode</span><span class="o">=</span><span class="n">child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Mode&#39;</span><span class="p">)</span>
+                            <span class="n">Type</span><span class="o">=</span><span class="n">child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Type&#39;</span><span class="p">)</span>
+                            <span class="n">Value</span><span class="o">=</span><span class="n">child</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+                            <span class="n">temp</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;Name&#39;</span><span class="p">:</span><span class="n">Name</span><span class="p">,</span><span class="s1">&#39;Mode&#39;</span><span class="p">:</span><span class="n">Mode</span><span class="p">,</span><span class="s1">&#39;Type&#39;</span><span class="p">:</span><span class="n">Type</span><span class="p">,</span><span class="s1">&#39;Value&#39;</span><span class="p">:</span><span class="n">Value</span><span class="p">})</span>
+                            <span class="n">procs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">Parameters</span><span class="o">=</span><span class="n">temp</span><span class="p">)</span>
+
+                        <span class="n">titles</span><span class="o">=</span><span class="p">[]</span>
+                        <span class="n">SheetName</span><span class="o">=</span><span class="n">childs</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;Sheet_result_title&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SheetName&#39;</span><span class="p">)</span>
+                        <span class="n">Rn</span><span class="o">=</span><span class="n">childs</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;Sheet_result_title&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Rn&#39;</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">childs</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;Sheet_result_title&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">):</span>
+                            <span class="n">titles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+                        <span class="n">procs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ProcName</span><span class="o">=</span><span class="n">ProcName</span><span class="p">,</span><span class="n">SheetName</span><span class="o">=</span><span class="n">SheetName</span><span class="p">,</span><span class="n">Rn</span><span class="o">=</span><span class="n">Rn</span><span class="p">,</span><span class="n">titles</span><span class="o">=</span><span class="n">titles</span><span class="p">)</span>
+                        <span class="n">Procs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">procs</span><span class="p">)</span>
+
+
+                    <span class="n">parameters</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">Procs</span><span class="o">=</span><span class="n">Procs</span><span class="p">,</span><span class="n">execType</span><span class="o">=</span><span class="s1">&#39;ExecuteMany&#39;</span><span class="p">)</span>
+
+                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                    <span class="n">Mapping</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;.//Sqls//Sql[@MappingName=&#39;</span><span class="si">{</span><span class="n">MappingName</span><span class="si">}</span><span class="s2">&#39;]&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+                    <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">Mapping</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;Statements&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s1">&#39;Statement&#39;</span><span class="p">):</span>
+                        <span class="n">SheetName</span><span class="o">=</span><span class="n">child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SheetName&#39;</span><span class="p">)</span>
+                        <span class="n">Statement</span><span class="o">=</span><span class="n">child</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+                        <span class="n">temp</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;SheetName&#39;</span><span class="p">:</span><span class="n">SheetName</span><span class="p">,</span><span class="s1">&#39;Statement&#39;</span><span class="p">:</span><span class="n">Statement</span><span class="p">})</span>
+                    <span class="n">parameters</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">Parameters</span><span class="o">=</span><span class="n">temp</span><span class="p">)</span>
+
+            
+            <span class="n">Name</span><span class="o">=</span><span class="n">Mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Name&#39;</span><span class="p">)</span>
+            <span class="n">Tag</span><span class="o">=</span><span class="n">Mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Tag&#39;</span><span class="p">)</span>
+            <span class="n">FileTag</span><span class="o">=</span><span class="n">Mapping</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;Config//OutputFileName//FileTag_1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+            <span class="n">DataLocation</span><span class="o">=</span><span class="n">Mapping</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;Config//OutputFileName//DataLocation_2&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+            <span class="n">OutputType</span><span class="o">=</span><span class="n">Mapping</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;Config//OutputFileName//OutputType_3&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+            <span class="n">OutputDateFormat</span><span class="o">=</span><span class="n">Mapping</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;Config//OutputFileName//OutputDateFormat_4&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+            <span class="n">OutputDateFormat</span><span class="o">=</span><span class="nb">eval</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;datetime.strftime(datetime.today(),&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">DateFormat_map</span><span class="p">[</span><span class="n">OutputDateFormat</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39;)&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">OutputDateFormat</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="n">DataMonth</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">date</span><span class="p">(</span><span class="n">year</span><span class="p">,</span><span class="n">month</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="s1">&#39;%Y%m&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">Mapping</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;Config//OutputFileName//DataMonth_5&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">==</span><span class="s1">&#39;1&#39;</span> <span class="k">else</span> <span class="kc">None</span>
+
+            <span class="n">CombineFormat</span><span class="o">=</span><span class="n">Mapping</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;Config//OutputFileName//CombineFormat&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+            <span class="n">CombineList</span><span class="o">=</span><span class="p">[]</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">CombineFormat</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
+                    <span class="n">CombineList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;self.OutputFileName[</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)))</span>
+            <span class="n">FileName</span><span class="o">=</span><span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">CombineList</span><span class="p">)</span>
+            <span class="n">ExistsHeader</span><span class="o">=</span><span class="n">Mapping</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;Config//ExistsHeader&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+            
+            <span class="n">IsZip</span><span class="o">=</span><span class="n">Mapping</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;Config//IsZiped&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+            <span class="n">parameters</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">Name</span><span class="o">=</span><span class="n">Name</span><span class="p">,</span><span class="n">Tag</span><span class="o">=</span><span class="n">Tag</span><span class="p">,</span><span class="n">FileName</span><span class="o">=</span><span class="n">FileName</span><span class="p">,</span><span class="n">ExistsHeader</span><span class="o">=</span><span class="n">ExistsHeader</span><span class="p">,</span><span class="n">IsZip</span><span class="o">=</span><span class="n">IsZip</span><span class="p">,</span><span class="n">DataLocation</span><span class="o">=</span><span class="n">DataLocation</span><span class="p">,</span><span class="n">MappingName</span><span class="o">=</span><span class="n">MappingName</span><span class="p">)</span>
+            <span class="n">parameters_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>                
+
+        <span class="k">return</span> <span class="n">parameters_list</span></div></div>
+
+<div class="viewcode-block" id="dataConsole"><a class="viewcode-back" href="../api/console_client.html#console_client.dataConsole">[文档]</a><span class="k">class</span> <span class="nc">dataConsole</span><span class="p">(</span><span class="n">ExportRules</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">database</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="o">=</span><span class="n">SQLClient</span><span class="p">(</span><span class="n">database</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="o">.</span><span class="n">conn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Rulefile</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="o">.</span><span class="n">Rulefile</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rulefile</span><span class="p">:</span>
+            <span class="n">ExportRules</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Rulefile</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__exportFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datas</span><span class="p">,</span><span class="n">dirDateTime</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param datas:</span>
+<span class="sd">        :param dirDateTime:</span>
+<span class="sd">        :param path:</span>
+<span class="sd">        :param columns:</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">FileName</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;FileName&quot;</span><span class="p">)</span>
+        <span class="n">ExistsHeader</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ExistsHeader&quot;</span><span class="p">))</span>
+        <span class="c1"># IsZip = int(kwargs.get(&quot;IsZip&quot;) if kwargs.get(&quot;IsZip&quot;) else 0)</span>
+        <span class="n">DataLocation</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;DataLocation&quot;</span><span class="p">)</span>
+        <span class="n">execType</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;execType&quot;</span><span class="p">)</span>
+
+        <span class="kn">from</span> <span class="nn">openpyxl.utils.dataframe</span> <span class="kn">import</span> <span class="n">dataframe_to_rows</span>
+
+        <span class="k">if</span> <span class="n">execType</span> <span class="o">==</span> <span class="s1">&#39;Tables&#39;</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">datas</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;FileFormat&quot;</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39;xlsx&#39;</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">wb</span> <span class="o">=</span> <span class="n">openpyxl</span><span class="o">.</span><span class="n">load_workbook</span><span class="p">(</span><span class="n">DataLocation</span><span class="p">)</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+                    <span class="n">wb</span> <span class="o">=</span> <span class="n">openpyxl</span><span class="o">.</span><span class="n">Workbook</span><span class="p">(</span><span class="n">write_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+                <span class="n">DEFAULT_FONT</span> <span class="o">=</span> <span class="n">Font</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Calibri&quot;</span><span class="p">,</span> <span class="n">sz</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                    <span class="n">color</span><span class="o">=</span><span class="n">Color</span><span class="p">(</span><span class="n">theme</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;minor&quot;</span><span class="p">)</span>
+                <span class="n">wb</span><span class="o">.</span><span class="n">_fonts</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">DEFAULT_FONT</span><span class="p">)</span>
+                <span class="k">del</span> <span class="n">wb</span><span class="o">.</span><span class="n">_fonts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">ws</span> <span class="o">=</span> <span class="n">wb</span><span class="o">.</span><span class="n">active</span>
+                <span class="k">if</span> <span class="n">ExistsHeader</span><span class="p">:</span>
+                    <span class="n">ws</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+                    <span class="n">ws</span><span class="o">.</span><span class="n">freeze_panes</span> <span class="o">=</span> <span class="s1">&#39;A2&#39;</span>
+                    <span class="k">for</span> <span class="n">rows</span> <span class="ow">in</span> <span class="n">ws</span><span class="o">.</span><span class="n">iter_rows</span><span class="p">(</span><span class="n">max_row</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+                        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+                            <span class="n">row</span><span class="o">.</span><span class="n">font</span> <span class="o">=</span> <span class="n">Font</span><span class="p">(</span><span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">maxwidth</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">))]</span>
+                <span class="k">for</span> <span class="n">irow</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                    <span class="n">ws</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">irow</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">irow</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">l</span><span class="p">))</span> <span class="o">&gt;</span> <span class="n">maxwidth</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                            <span class="n">maxwidth</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">l</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">maxwidth</span><span class="p">):</span>
+                    <span class="n">ws</span><span class="o">.</span><span class="n">column_dimensions</span><span class="p">[</span><span class="n">get_column_letter</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">w</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">uploadFile</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">FileName</span><span class="si">}</span><span class="s1">.xlsx&#39;</span>
+                <span class="n">wb</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">uploadFile</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">FileName</span><span class="si">}</span><span class="s2">.csv&quot;</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">csvfile</span><span class="p">:</span>
+                    <span class="n">spamwriter</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">csvfile</span><span class="p">,</span> <span class="n">dialect</span><span class="o">=</span><span class="s1">&#39;excel&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">ExistsHeader</span><span class="p">:</span>
+                        <span class="n">spamwriter</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                        <span class="n">spamwriter</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+                <span class="n">uploadFile</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">FileName</span><span class="si">}</span><span class="s2">.csv&quot;</span>
+
+        <span class="k">elif</span> <span class="n">execType</span> <span class="o">==</span> <span class="s1">&#39;ExecuteMany&#39;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">wb</span> <span class="o">=</span> <span class="n">openpyxl</span><span class="o">.</span><span class="n">load_workbook</span><span class="p">(</span><span class="n">DataLocation</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+                <span class="n">wb</span> <span class="o">=</span> <span class="n">openpyxl</span><span class="o">.</span><span class="n">Workbook</span><span class="p">(</span><span class="n">write_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="n">Procs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Procs&quot;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">Proc</span> <span class="ow">in</span> <span class="n">Procs</span><span class="p">:</span>
+                <span class="n">ws</span> <span class="o">=</span> <span class="n">wb</span><span class="p">[</span><span class="n">Proc</span><span class="p">[</span><span class="s1">&#39;SheetName&#39;</span><span class="p">]]</span>
+                <span class="n">titles</span> <span class="o">=</span> <span class="n">Proc</span><span class="p">[</span><span class="s1">&#39;titles&#39;</span><span class="p">]</span>
+                <span class="n">rn</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">Proc</span><span class="p">[</span><span class="s1">&#39;Rn&#39;</span><span class="p">])</span>
+
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">titles</span><span class="p">)):</span>
+
+                    <span class="n">df</span> <span class="o">=</span> <span class="n">datas</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">fill_green</span> <span class="o">=</span> <span class="n">PatternFill</span><span class="p">(</span><span class="n">fill_type</span><span class="o">=</span><span class="s1">&#39;solid&#39;</span><span class="p">,</span> <span class="n">fgColor</span><span class="o">=</span><span class="s1">&#39;228B22&#39;</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
+                        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">rn</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">ws</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">titles</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+                        <span class="n">ws</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">ws</span><span class="o">.</span><span class="n">max_row</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fill</span> <span class="o">=</span> <span class="n">fill_green</span>
+
+                        <span class="n">max_row</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">max_row</span>
+                        <span class="n">max_col</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">dataframe_to_rows</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="n">r</span> <span class="o">==</span> <span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
+                                <span class="k">continue</span>
+                            <span class="n">ws</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+                        <span class="n">ws</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">())</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">dfg</span> <span class="o">=</span> <span class="n">dataframe_to_rows</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                        <span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
+                        <span class="n">ws</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">max_row</span> <span class="o">+</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">max_col</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">titles</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                        <span class="n">ws</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">max_row</span> <span class="o">+</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">max_col</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">fill</span> <span class="o">=</span> <span class="n">fill_green</span>
+
+                        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="n">row_data</span> <span class="o">=</span> <span class="n">dfg</span><span class="o">.</span><span class="fm">__next__</span><span class="p">()</span>
+                            <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                                <span class="k">break</span>
+
+                            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">row_data</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                                <span class="n">ws</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">max_row</span> <span class="o">+</span> <span class="n">x</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">max_col</span> <span class="o">+</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">row_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+
+                            <span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="n">max_col</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+                        <span class="n">wb</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">FileName</span> <span class="o">+</span> <span class="s1">&#39;.xlsx&#39;</span><span class="p">))</span>
+
+
+        <span class="k">if</span> <span class="n">path</span><span class="o">==</span><span class="kc">None</span> <span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">((</span><span class="n">ExportPath</span><span class="o">:=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;..</span><span class="se">\\</span><span class="s2">..</span><span class="se">\\</span><span class="s2">SQL_Export_Result</span><span class="se">\\</span><span class="s2">Export_List</span><span class="se">\\</span><span class="si">{</span><span class="n">dirDateTime</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">ExportPath</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                    <span class="k">pass</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="n">ExportPath</span><span class="o">=</span><span class="n">path</span>
+
+        <span class="n">exportFile</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ExportPath</span><span class="p">,</span><span class="n">uploadFile</span><span class="p">)</span>
+        <span class="n">move</span><span class="p">(</span><span class="n">uploadFile</span><span class="p">,</span><span class="n">exportFile</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">exportFile</span>
+
+<div class="viewcode-block" id="dataConsole.export"><a class="viewcode-back" href="../api/console_client.html#console_client.dataConsole.export">[文档]</a>    <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">arg</span><span class="p">,</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">str</span><span class="p">:</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exportRules</span><span class="p">(</span><span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+
+        <span class="n">thread_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">datas</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">dirDateTime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">%H%M%S&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;execType&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Tables&#39;</span><span class="p">:</span>
+                <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cur</span><span class="p">:</span>
+                    <span class="n">sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;Name&#39;</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+                    <span class="n">datas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">())</span>
+                    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">cur</span><span class="o">.</span><span class="n">description</span><span class="p">]</span>
+
+            <span class="k">elif</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;execType&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;ExecuteMany&#39;</span><span class="p">:</span>
+
+                <span class="n">Procs</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;Procs&quot;</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">Proc</span> <span class="ow">in</span> <span class="n">Procs</span><span class="p">:</span>
+                    <span class="n">cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+                    <span class="n">ProcName</span> <span class="o">=</span> <span class="n">Proc</span><span class="p">[</span><span class="s1">&#39;ProcName&#39;</span><span class="p">]</span>
+                    <span class="n">rn</span> <span class="o">=</span> <span class="n">Proc</span><span class="p">[</span><span class="s1">&#39;titles&#39;</span><span class="p">]</span>
+                    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;execute </span><span class="si">{</span><span class="n">ProcName</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rn</span><span class="p">)):</span>
+                        <span class="n">datas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">())</span>
+                    <span class="n">cur</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="n">columns</span><span class="o">=</span><span class="kc">None</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__exportFile</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">datas</span><span class="p">,</span><span class="n">dirDateTime</span><span class="p">,</span><span class="n">path</span><span class="p">,</span><span class="n">columns</span><span class="p">),</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">item</span><span class="p">)</span>
+            <span class="n">thread_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">thread_list</span><span class="p">:</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">thread_list</span><span class="p">:</span>
+            <span class="n">Thread</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="dataConsole.import_from_excel"><a class="viewcode-back" href="../api/console_client.html#console_client.dataConsole.import_from_excel">[文档]</a>    <span class="k">def</span> <span class="nf">import_from_excel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">file</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;创建表并导入&#39;&#39;&#39;</span>
+
+        <span class="n">excel</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">dtypes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">excel</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">excel</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="nb">object</span><span class="p">:</span>
+                <span class="n">excel</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">excel</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+                <span class="n">length</span><span class="o">=</span><span class="n">excel</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">encode</span><span class="p">()))</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+                <span class="n">dtypes</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">VARCHAR</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">excel</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;&lt;M8[ns]&#39;</span><span class="p">:</span> <span class="c1">#datetime64[ns]</span>
+                <span class="n">dtypes</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">DateTime</span><span class="p">()</span>
+        <span class="n">conn_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+        <span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="n">conn_string</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="n">filename</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">with</span> <span class="n">engine</span><span class="o">.</span><span class="n">begin</span><span class="p">():</span>
+            <span class="n">excel</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span><span class="n">con</span><span class="o">=</span><span class="n">engine</span><span class="p">,</span><span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;fail&#39;</span><span class="p">,</span>
+                         <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">chunksize</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtypes</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="dataConsole.import_from_csv"><a class="viewcode-back" href="../api/console_client.html#console_client.dataConsole.import_from_csv">[文档]</a>    <span class="k">def</span> <span class="nf">import_from_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">file</span><span class="p">,</span><span class="n">tablename</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;将csv数据导入到已存在的表&#39;&#39;&#39;</span>
+        <span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">tablename</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span><span class="n">names</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">UnicodeDecodeError</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">=</span><span class="p">[]</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;UTF8&#39;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">csvfile</span><span class="p">:</span>
+                <span class="n">spamreader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">csvfile</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="n">sep</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">spamreader</span><span class="p">:</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">!=</span><span class="n">columns</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">ColumnError</span><span class="p">(</span><span class="s1">&#39;导入列和表列不对应，无法导入&#39;</span><span class="p">)</span>
+
+        <span class="n">dtypes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">tablename</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">column</span><span class="p">,</span><span class="n">dtype</span> <span class="ow">in</span> <span class="n">dtypes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1">#转换为时间类型，否则oracle写入失败</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">DateTime</span><span class="p">):</span>
+                <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">])</span>
+
+        <span class="n">conn_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">S</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+        <span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="n">conn_string</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">engine</span><span class="o">.</span><span class="n">begin</span><span class="p">():</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">tablename</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="n">engine</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;append&#39;</span><span class="p">,</span>
+                         <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">chunksize</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtypes</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="dataConsole.sql_to_excel"><a class="viewcode-back" href="../api/console_client.html#console_client.dataConsole.sql_to_excel">[文档]</a>    <span class="k">def</span> <span class="nf">sql_to_excel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sql</span><span class="p">,</span><span class="n">filename</span><span class="p">,</span><span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;查询SQL并导出EXCEL&quot;&quot;&quot;</span>
+        <span class="n">cur</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">cur</span><span class="o">.</span><span class="n">description</span><span class="p">]</span>
+        <span class="n">datas</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">datas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">())</span>
+        <span class="n">cur</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">item</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;FileName&#39;</span><span class="p">:</span><span class="n">filename</span><span class="p">,</span><span class="s1">&#39;execType&#39;</span><span class="p">:</span><span class="s1">&#39;Tables&#39;</span><span class="p">,</span><span class="s1">&#39;FileFormat&#39;</span><span class="p">:</span><span class="s1">&#39;xlsx&#39;</span><span class="p">,</span><span class="s1">&#39;ExistsHeader&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__exportFile</span><span class="p">(</span><span class="n">datas</span><span class="p">,</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">,</span><span class="o">**</span><span class="n">item</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="dataConsole.sync_table"><a class="viewcode-back" href="../api/console_client.html#console_client.dataConsole.sync_table">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">sync_table</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">fromdb</span><span class="p">,</span><span class="n">todb</span><span class="p">,</span><span class="n">table</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">re</span>
+        <span class="kn">import</span> <span class="nn">pymysql</span>
+        <span class="n">ST</span> <span class="o">=</span> <span class="n">SQLClient</span><span class="p">(</span><span class="n">todb</span><span class="p">)</span>
+        <span class="n">cur</span> <span class="o">=</span> <span class="n">ST</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="n">SQLClient</span><span class="p">(</span><span class="n">fromdb</span><span class="p">)</span>
+        <span class="n">col1</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1">#同步表结构</span>
+            <span class="n">col2</span><span class="o">=</span><span class="n">ST</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">col1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">col1</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="o">!=</span><span class="n">col2</span><span class="p">[</span><span class="n">c</span><span class="p">]:</span>
+                    <span class="n">sql</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;ALTER TABLE </span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s1"> MODIFY c </span><span class="si">{</span><span class="n">col1</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="si">}</span><span class="s1">;&#39;</span>
+                    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">pymysql</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">ProgrammingError</span><span class="p">:</span>
+            <span class="c1">#表不存在，创建表</span>
+            <span class="n">sql</span><span class="o">=</span><span class="n">S</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">sql</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;AUTO_INCREMENT&#39;</span><span class="p">)</span><span class="o">!=-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">sql</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;AUTO_INCREMENT=\d+&#39;</span><span class="p">,</span> <span class="s1">&#39;AUTO_INCREMENT=1&#39;</span><span class="p">,</span> <span class="n">sql</span><span class="p">)</span>
+            <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+        <span class="n">cur</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">S</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">ST</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="dataConsole.sync_data"><a class="viewcode-back" href="../api/console_client.html#console_client.dataConsole.sync_data">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">sync_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">fromdb</span><span class="p">,</span><span class="n">todb</span><span class="p">,</span><span class="n">table</span><span class="p">):</span>
+        <span class="n">S</span><span class="o">=</span><span class="n">SQLClient</span><span class="p">(</span><span class="n">fromdb</span><span class="p">)</span>
+        <span class="n">tconn</span><span class="o">=</span><span class="n">SQLClient</span><span class="p">(</span><span class="n">todb</span><span class="p">)</span><span class="o">.</span><span class="n">conn</span>
+        <span class="n">tcur</span><span class="o">=</span><span class="n">tconn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">S</span><span class="o">.</span><span class="n">values</span><span class="p">(</span><span class="n">table</span><span class="p">):</span>
+            <span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;insert into </span><span class="si">{}</span><span class="se">\r\n</span><span class="s1">values </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">tcur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+            <span class="n">tconn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">tconn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;同步完成&#39;</span><span class="p">)</span></div></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+            
+        
+        
+            
+            
+            
+            
+        
+
+ 
+    
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; 版权所有 2020, lzx
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

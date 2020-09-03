@@ -1,0 +1,329 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>sql_client module &mdash; pgt 1.0 文档</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/translations.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pgt
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">sql_client module</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pgt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>sql_client module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/sql_client.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-sql_client">
+<span id="sql-client-module"></span><h1>sql_client module<a class="headerlink" href="#module-sql_client" title="永久链接至标题">¶</a></h1>
+<dl class="py class">
+<dt id="sql_client.BaseClient">
+<em class="property">class </em><code class="sig-prename descclassname">sql_client.</code><code class="sig-name descname">BaseClient</code><a class="reference internal" href="../_modules/sql_client.html#BaseClient"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#sql_client.BaseClient" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="sql_client.BaseClient.column_add_pre">
+<em class="property">classmethod </em><code class="sig-name descname">column_add_pre</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">column</span></em>, <em class="sig-param"><span class="n">pre</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sql_client.html#BaseClient.column_add_pre"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#sql_client.BaseClient.column_add_pre" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="sql_client.BaseClient.column_add_quotes">
+<em class="property">classmethod </em><code class="sig-name descname">column_add_quotes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">column</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sql_client.html#BaseClient.column_add_quotes"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#sql_client.BaseClient.column_add_quotes" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="sql_client.BaseClient.column_from_create">
+<em class="property">classmethod </em><code class="sig-name descname">column_from_create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">create</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="../_modules/sql_client.html#BaseClient.column_from_create"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#sql_client.BaseClient.column_from_create" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="sql_client.BaseClient.column_map">
+<em class="property">classmethod </em><code class="sig-name descname">column_map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">column</span></em>, <em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">sep</span><span class="o">=</span><span class="default_value">','</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sql_client.html#BaseClient.column_map"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#sql_client.BaseClient.column_map" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="sql_client.BaseClient.column_to_list">
+<em class="property">classmethod </em><code class="sig-name descname">column_to_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">column</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="../_modules/sql_client.html#BaseClient.column_to_list"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#sql_client.BaseClient.column_to_list" title="永久链接至目标">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>column</strong> – SELECT语句中的字段部分</p>
+</dd>
+</dl>
+<p>:return:把字段内容拆分存入列表</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="sql_client.BaseClient.column_to_str">
+<em class="property">classmethod </em><code class="sig-name descname">column_to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">column</span><span class="p">:</span> <span class="n">list</span></em>, <em class="sig-param"><span class="n">sep</span><span class="o">=</span><span class="default_value">','</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/sql_client.html#BaseClient.column_to_str"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#sql_client.BaseClient.column_to_str" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="sql_client.CREATE">
+<em class="property">class </em><code class="sig-prename descclassname">sql_client.</code><code class="sig-name descname">CREATE</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span></em>, <em class="sig-param"><span class="n">istemp</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">col</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwcols</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sql_client.html#CREATE"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#sql_client.CREATE" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="sql_client.CREATE.add_columns">
+<code class="sig-name descname">add_columns</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">column</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sql_client.html#CREATE.add_columns"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#sql_client.CREATE.add_columns" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="sql_client.CREATE.column">
+<em class="property">classmethod </em><code class="sig-name descname">column</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sql</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sql_client.html#CREATE.column"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#sql_client.CREATE.column" title="永久链接至目标">¶</a></dt>
+<dd><p>从建表语句中提取字段信息</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="sql_client.CREATE.to_mysql">
+<code class="sig-name descname">to_mysql</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sql_client.html#CREATE.to_mysql"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#sql_client.CREATE.to_mysql" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="sql_client.SQLClient">
+<em class="property">class </em><code class="sig-prename descclassname">sql_client.</code><code class="sig-name descname">SQLClient</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">database</span><span class="o">=</span><span class="default_value">'GP_STORE_DEV'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sql_client.html#SQLClient"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#sql_client.SQLClient" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="#sql_client.BaseClient" title="sql_client.BaseClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">sql_client.BaseClient</span></code></a></p>
+<dl class="py method">
+<dt id="sql_client.SQLClient.batch">
+<code class="sig-name descname">batch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sql_client.html#SQLClient.batch"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#sql_client.SQLClient.batch" title="永久链接至目标">¶</a></dt>
+<dd><p>批量执行create或procedure语句</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="sql_client.SQLClient.column">
+<code class="sig-name descname">column</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span></em>, <em class="sig-param"><span class="n">mode</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sql_client.html#SQLClient.column"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#sql_client.SQLClient.column" title="永久链接至目标">¶</a></dt>
+<dd><p>返回字段</p>
+<dl class="simple">
+<dt>:parameter mode</dt><dd><p>1-只返回字段名称列表
+2-以字典的形式返回sqlalchemy需要字段名称和字段类型
+3-以字典的形式返回字段名称和字段类型</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="sql_client.SQLClient.create">
+<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">column</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sql_client.html#SQLClient.create"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#sql_client.SQLClient.create" title="永久链接至目标">¶</a></dt>
+<dd><p>返回建表语句
+:column 建表语句中的字段</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="sql_client.SQLClient.insert">
+<code class="sig-name descname">insert</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">totable</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">fromtable</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">align</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">add_columns</span><span class="p">:</span> <span class="n">list</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sql_client.html#SQLClient.insert"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#sql_client.SQLClient.insert" title="永久链接至目标">¶</a></dt>
+<dd><p>返回一条完整的insert语句</p>
+<p>:parameter align 自动对齐insert和select的字段，无法对齐的字段放置在后面</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="sql_client.SQLClient.procedure">
+<code class="sig-name descname">procedure</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sp_name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sql_client.html#SQLClient.procedure"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#sql_client.SQLClient.procedure" title="永久链接至目标">¶</a></dt>
+<dd><p>返回存储过程创建语句</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="sql_client.SQLClient.select">
+<code class="sig-name descname">select</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tablename</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">add_columns</span><span class="p">:</span> <span class="n">list</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sql_client.html#SQLClient.select"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#sql_client.SQLClient.select" title="永久链接至目标">¶</a></dt>
+<dd><p>select一张表，并列出该表所有字段</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="sql_client.SQLClient.table">
+<code class="sig-name descname">table</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">db</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sql_client.html#SQLClient.table"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#sql_client.SQLClient.table" title="永久链接至目标">¶</a></dt>
+<dd><p>返回该db比较重要的表(剔除备份表、临时表)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="sql_client.SQLClient.values">
+<code class="sig-name descname">values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">table</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/sql_client.html#SQLClient.values"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#sql_client.SQLClient.values" title="永久链接至目标">¶</a></dt>
+<dd><p>提取table数据，返回一个生成器,生成器将以values的形式返回table数据(目前最多可返回10000条数据)</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; 版权所有 2020, lzx
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

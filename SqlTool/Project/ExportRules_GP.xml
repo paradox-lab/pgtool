@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ExportRules>
+  <Tables>
+    <Table Name="effective_banner_create_or_inactive_to_rcs_view" MappingName="GP_BANNER" Tag="p1m">
+      <Config>
+        <OutputFileName>
+          <FileTag_1>GP_BANNER</FileTag_1>
+		  <!--文件导出路径-->
+          <DataLocation_2></DataLocation_2>
+          <!--生成的类型（保留字段，不需要设置，只是用于是否在文件名显示（Daily，Monthly）-->
+          <OutputType_3></OutputType_3>
+          <OutputDateFormat_4>yyyyMMddhhmmss</OutputDateFormat_4>
+          <DataMonth_5></DataMonth_5>
+          <!--文件名组合方式，？代表未知-->
+          <CombineFormat>1_4</CombineFormat>
+        </OutputFileName>
+        <ExistsHeader>1</ExistsHeader>
+        <FileFormat>xlsx</FileFormat>
+        <IsZiped>0</IsZiped>
+      </Config>
+    </Table>	
+    <Table Name="effective_store_banner_to_rcs_view" MappingName="GP_STORE" Tag="p1m">
+      <Config>
+        <OutputFileName>
+          <FileTag_1>GP_STORE</FileTag_1>
+		  <!--文件导出路径-->
+          <DataLocation_2></DataLocation_2>
+          <!--生成的类型（保留字段，不需要设置，只是用于是否在文件名显示（Daily，Monthly）-->
+          <OutputType_3></OutputType_3>
+          <OutputDateFormat_4>yyyyMMddhhmmss</OutputDateFormat_4>
+          <DataMonth_5></DataMonth_5>
+          <!--文件名组合方式，？代表未知-->
+          <CombineFormat>1_4</CombineFormat>
+        </OutputFileName>
+        <ExistsHeader>1</ExistsHeader>
+		<FileFormat>csv</FileFormat>
+        <IsZiped>0</IsZiped>
+      </Config>
+    </Table>	
+  </Tables>
+  <ExecuteMany>
+	 <!--618Project daily对数-->
+     <Workbook Name="" MappingName="618_daily_detail" Tag="p1m">
+	  <Procs>
+		<Proc Name="[dbo].[daily_test_cdl_go]">
+			<Parameters>
+			<!-- <Parameter/> -->		
+			</Parameters>
+			<Sheet_result_title SheetName="CDL-GO" Rn="2">
+				<title>2019</title>
+				<title>2020</title>
+			</Sheet_result_title>		
+		 </Proc>	  
+		<Proc Name="[dbo].[daily_test_ByCategory_ptd]">
+			<Parameters>
+			<!-- <Parameter/> -->		
+		  </Parameters>
+			<Sheet_result_title SheetName="ByCategory(PTD)" Rn="2">
+			<title>ByCategory--Offtake</title>
+			<title>ByCategory--presell</title>
+			<title>ByCategory--IYA</title>
+			<title>ByCategory--Stretch vs.TimeGone</title>
+			<title>ByCategory--Base vs.TimeGone</title>
+		  </Sheet_result_title>		  
+		 </Proc>
+		<Proc Name="[dbo].[daily_test_ByBrand_ptd]">
+			<Parameters>
+			<!-- <Parameter/> -->		
+			</Parameters>
+			<Sheet_result_title SheetName="ByBrand(PTD)" Rn="2">
+				<title>ByBrand--Offtake</title>
+				<title>ByBrand--IYA</title>
+				<title>ByBrand--Stretch vs.TimeGone</title>
+				<title>ByBrand--Base vs.TimeGone</title>
+			</Sheet_result_title>		
+		 </Proc>	
+		<Proc Name="[dbo].[daily_test_ByStore_ptd]">
+			<Parameters>
+			<!-- <Parameter/> -->		
+			</Parameters>
+			<Sheet_result_title SheetName="ByStore(PTD)" Rn="2">
+				<title>ByStore--Offtake</title>
+				<title>ByCategory--presell</title>
+				<title>ByStore--IYA</title>
+				<title>ByStore--Stretch vs.TimeGone</title>
+				<title>ByStore--Base vs.TimeGone</title>
+			</Sheet_result_title>		
+		 </Proc>		 
+	  </Procs>	
+      <Config>
+        <OutputFileName>
+          <FileTag_1>618 daily prod 对数report</FileTag_1>
+          <DataLocation_2>E:\618 project\py\618 daily prod mmdd对数report.xlsx</DataLocation_2>
+          <!--生成的类型（保留字段，不需要设置，只是用于是否在文件名显示（Daily，Monthly）-->
+          <OutputType_3></OutputType_3>
+          <OutputDateFormat_4>yyyyMMdd</OutputDateFormat_4>
+          <DataMonth_5>1</DataMonth_5>
+          <!--文件名组合方式，？代表未知-->
+          <CombineFormat>1_4</CombineFormat>
+        </OutputFileName>
+		<ExistsHeader>1</ExistsHeader>
+        <IsZiped>0</IsZiped>
+      </Config> 
+	 </Workbook>	 
+  </ExecuteMany>
+  <Sqls>
+      <Sql Name="618_gap" MappingName="618_gap" Tag="ALL">
+	  <Statements>
+	  <Statement SheetName="" >yyyymm</Statement>
+	  <Statement SheetName="" >yyyymm</Statement>
+	  </Statements>
+      <Config>
+        <OutputFileName>
+          <FileTag_1>TC_LCH_NEW</FileTag_1>
+		  <!--文件导出路径-->
+          <DataLocation_2></DataLocation_2>
+          <!--生成的类型（保留字段，不需要设置，只是用于是否在文件名显示（Daily，Monthly）-->
+          <OutputType_3></OutputType_3>
+          <OutputDateFormat_4>yyyyMMddhhmmss</OutputDateFormat_4>
+          <DataMonth_5></DataMonth_5>
+          <!--文件名组合方式，？代表未知-->
+          <CombineFormat>1_4</CombineFormat>
+        </OutputFileName>
+        <ExistsHeader>0</ExistsHeader>
+        <IsZiped>0</IsZiped>
+      </Config> 
+	 </Sql>
+	</Sqls>
+</ExportRules>
+
